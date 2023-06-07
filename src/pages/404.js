@@ -1,4 +1,4 @@
-import Layout from "../components/Layout";
+import Layout from "../Components/UI/Layout/Layout";
 
 export default function Page404({ locale, locales, defaultLocale }) {
   return (

@@ -1,19 +1,31 @@
-import Layout from "../components/Layout";
+import Layout from "../Components/UI/Layout/Layout";
 import {
   useStoryblokState,
   getStoryblokApi,
   StoryblokComponent,
 } from "@storyblok/react";
+import { useRouter } from "next/router";
 
 export default function Page({ story, locale, locales, defaultLocale }) {
+  const router = useRouter();
+  const hiddenSlugs = ["header", "global-settings"];
+
+  const hasHiddenSlug = router?.query?.slug?.some((slug) =>
+    hiddenSlugs.includes(slug)
+  );
+
   story = useStoryblokState(story, {
-    resolveRelations: ["featured-posts.posts", "selected-posts.posts"],
+    resolveRelations: ["featured-posts.posts"],
     language: locale,
   });
 
   return (
     <Layout locale={locale} locales={locales} defaultLocale={defaultLocale}>
-      <StoryblokComponent blok={story.content} />
+      {hasHiddenSlug ? (
+        <p>Page not found</p>
+      ) : (
+        <StoryblokComponent blok={story.content} />
+      )}
     </Layout>
   );
 }
@@ -28,7 +40,7 @@ export async function getStaticProps({
 
   let sbParams = {
     version: "draft",
-    resolve_relations: ["featured-posts.posts", "selected-posts.posts"],
+    resolve_relations: ["featured-posts.posts"],
     language: locale,
   };
 
